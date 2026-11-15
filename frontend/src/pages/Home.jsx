@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
+import api from '../api.js'
 
 export default function Home() {
   const [message, setMessage] = useState('Loading...')
 
   useEffect(() => {
-    fetch('/api/hello/')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
+    api
+      .get('/hello/')
+      .then((res) => setMessage(res.data.message))
       .catch(() => setMessage('Could not reach the backend. Is Django running?'))
   }, [])
 

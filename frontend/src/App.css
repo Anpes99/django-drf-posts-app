@@ -137,3 +137,22 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.form-error {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  background: #e5484d22;
+  color: #e5484d;
+  font-size: 0.9rem;
+  white-space: pre-line;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.header-user {
+  font-weight: 600;
+}
