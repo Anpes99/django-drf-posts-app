@@ -29,6 +29,10 @@ export default function Home() {
     setPage(1)
   }
 
+  const handleUpdate = (updated) => {
+    setPosts((current) => current.map((p) => (p.id === updated.id ? updated : p)))
+  }
+
   const handleDelete = () => {
     // If the last post on this page was deleted, go back one page
     if (posts.length === 1 && page > 1) setPage(page - 1)
@@ -44,7 +48,7 @@ export default function Home() {
       <h1>Home</h1>
       <SearchBar onSearch={handleSearch} />
       <div>
-      {posts.map(post =><PostFeedItem key={post.id} post={post} onDelete={handleDelete}/>)}</div>
+      {posts.map(post =><PostFeedItem key={post.id} post={post} onDelete={handleDelete} onUpdate={handleUpdate}/>)}</div>
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </section>
   )
