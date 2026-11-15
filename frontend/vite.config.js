@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://127.0.0.1:8000',
+      // e2e tests point this at their own backend (see playwright.config.js)
+      '/api': process.env.API_TARGET ?? 'http://127.0.0.1:8000',
     },
   },
 })
