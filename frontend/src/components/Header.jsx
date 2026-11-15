@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import api from '../api.js'
 import {  setUser } from '../store/appSlice.js'
 import LoginModal from './Modals/LoginModal.jsx'
+import PostModal from './Modals/PostModal.jsx'
 import SignupModal from './Modals/SignupModal.jsx'
 
 export default function Header() {
@@ -47,6 +48,13 @@ export default function Header() {
         <Link to="/">Home</Link>
         {!authChecked ? null : user ? (
           <>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setActiveModal('post')}
+            >
+              New post
+            </button>
             <span className="header-user">{user.username}</span>
             <button type="button" className="btn btn-outline" onClick={handleLogout}>
               Log out
@@ -84,6 +92,7 @@ export default function Header() {
         onSwitchToLogin={() => setActiveModal('login')}
         onSuccess={handleAuthSuccess}
       />
+      <PostModal open={activeModal === 'post'} onClose={closeModal} />
     </header>
   )
 }
