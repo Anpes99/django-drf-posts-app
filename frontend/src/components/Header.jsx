@@ -92,7 +92,7 @@ export default function Header() {
         onSwitchToLogin={() => setActiveModal('login')}
         onSuccess={handleAuthSuccess}
       />
-      <PostModal open={activeModal === 'post'} onClose={closeModal} />
+      <PostModal open={activeModal === 'post'} onClose={closeModal} onSuccess={closeModal} />
     </header>
   )
 }

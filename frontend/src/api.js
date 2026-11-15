@@ -10,12 +10,14 @@ const api = axios.create({
 })
 
 // Turn an axios error into a readable message.
-// Backend sends {error: "..."} or {error: [...]}; DRF sends {detail: "..."}.
+// Backend sends {error: "..."}, {error: [...]} or field errors
+// {error: {title: [...]}}; DRF sends {detail: "..."}.
 export function getErrorMessage(err) {
   const data = err.response?.data
   const msg = data?.error ?? data?.detail
   if (Array.isArray(msg)) return msg.join('\n')
   if (typeof msg === 'string') return msg
+  if (msg && typeof msg === 'object') return Object.values(msg).flat().join('\n')
   return 'Something went wrong. Please try again.'
 }
 
