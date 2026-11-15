@@ -162,3 +162,42 @@
   resize: vertical;
   min-height: 120px;
 }
+
+/* Post feed item */
+.post-item {
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e4e7;
+  border-radius: 12px;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.post-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #08060d;
+}
+
+.post-meta {
+  margin: 0.35rem 0 0.85rem;
+  font-size: 0.85rem;
+  color: #6b6375;
+}
+
+.post-author {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  margin-right: 0.4rem;
+  border-radius: 999px;
+  background: rgba(170, 59, 255, 0.1);
+  color: #aa3bff;
+  font-weight: 600;
+}
+
+.post-text {
+  margin: 0;
+  line-height: 1.6;
+  color: #3f3a47;
+  white-space: pre-line;
+}

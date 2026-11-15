@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import api from '../api.js'
+import PostFeedItem from '../components/PostFeedItem.jsx'
 
 export default function Home() {
-  const [message, setMessage] = useState('Loading...')
+  const [posts, setPosts] = useState([])
 
   useEffect(() => {
     api
-      .get('/hello/')
-      .then((res) => setMessage(res.data.message))
-      .catch(() => setMessage('Could not reach the backend. Is Django running?'))
+      .get('/posts')
+      .then((res) => {
+        
+        setPosts(res.data)})
   }, [])
 
   return (
     <section>
       <h1>Home</h1>
-      <p>Welcome! This page is served by React Router.</p>
-      <p className="api-message">
-        <strong>Backend says:</strong> {message}
-      </p>
+      <div>
+      {posts.map(post =><PostFeedItem key={post.id} post={post}/>)}</div>
     </section>
   )
 }
