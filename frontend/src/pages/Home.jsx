@@ -11,6 +11,7 @@ export default function Home() {
   const [searchWord, setSearchWord] = useState("")
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [reloadKey, setReloadKey] = useState(0) // add 1 to refetch the current page
 
   useEffect(() => {
     api
@@ -21,11 +22,17 @@ export default function Home() {
         setPosts(res.data.results)
         setTotalPages(Math.ceil(res.data.count / PAGE_SIZE))
       })
-  }, [searchWord, page])
+  }, [searchWord, page, reloadKey])
 
   const handleSearch = (word) => {
     setSearchWord(word)
     setPage(1)
+  }
+
+  const handleDelete = () => {
+    // If the last post on this page was deleted, go back one page
+    if (posts.length === 1 && page > 1) setPage(page - 1)
+    else setReloadKey((k) => k + 1)
   }
 
   const handlePageChange = (newPage) => {
@@ -37,7 +44,7 @@ export default function Home() {
       <h1>Home</h1>
       <SearchBar onSearch={handleSearch} />
       <div>
-      {posts.map(post =><PostFeedItem key={post.id} post={post}/>)}</div>
+      {posts.map(post =><PostFeedItem key={post.id} post={post} onDelete={handleDelete}/>)}</div>
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </section>
   )

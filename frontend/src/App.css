@@ -290,3 +290,31 @@
   padding: 0 0.25rem;
   opacity: 0.6;
 }
+
+.post-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.post-delete {
+  flex-shrink: 0;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #f3c2c4;
+  border-radius: 6px;
+  background: #fff;
+  color: #d93036;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.post-delete:hover:not(:disabled) {
+  background: #fdecec;
+}
+
+.post-delete:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

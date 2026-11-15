@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from .models import Post
 from .serializers import CreatePostSerializer, ReadPostSerializer
 from .pagination import PostPagination
+from .permissions import IsAuthorOrReadOnly
 
-
-class PostView(generics.ListCreateAPIView):
+class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.select_related('author').order_by('-created_at')
     
     filter_backends = [filters.SearchFilter]
@@ -28,3 +28,9 @@ class PostView(generics.ListCreateAPIView):
 
         post = serializer.save(author=request.user)
         return Response(ReadPostSerializer(post).data, status=status.HTTP_201_CREATED)
+
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.select_related('author')
+    serializer_class = ReadPostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    http_method_names = ['get', 'patch', 'delete', 'head', 'options']
