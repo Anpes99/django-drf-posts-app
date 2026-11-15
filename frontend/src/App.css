@@ -54,3 +54,86 @@
 .btn-primary:hover {
   background: #535bf2;
 }
+
+/* Modals */
+.modal {
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  width: min(420px, calc(100% - 32px));
+  background: var(--bg, #fff);
+  color: inherit;
+  box-shadow: 0 20px 50px #0004;
+}
+
+.modal::backdrop {
+  background: #0008;
+}
+
+.modal-box {
+  padding: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: left;
+}
+
+.modal-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.modal-form input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #8886;
+  border-radius: 6px;
+  font: inherit;
+  background: transparent;
+  color: inherit;
+}
+
+.modal-form .btn {
+  margin-top: 0.4rem;
+}
+
+.modal-switch {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #646cff;
+  cursor: pointer;
+  text-decoration: underline;
+}
