@@ -1,22 +1,14 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router'
+import Header from './components/Header.jsx'
+import Home from './pages/Home.jsx'
 
-function App() {
-  const [message, setMessage] = useState('Loading...')
-
-  useEffect(() => {
-    fetch('/api/hello/')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage('Could not reach the backend. Is Django running?'))
-  }, [])
-
+export default function App() {
   return (
-    <main>
-      <h1>Django DRF + React</h1>
-      <p>{message}</p>
-    </main>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
