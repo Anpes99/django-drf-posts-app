@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # local
     'api',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -132,11 +133,17 @@ MAILERS = {
     },
 }
 
+# Custom user model
+AUTH_USER_MODEL = 'authentication.User'
+
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 # CORS (Vite dev server)
@@ -144,3 +151,5 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
+
+CORS_ALLOW_CREDENTIALS = True

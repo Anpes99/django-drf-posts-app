@@ -14,16 +14,8 @@ export default function SignupModal({ open, onClose, onSwitchToLogin }) {
           <input type="text" name="username" autoComplete="username" required />
         </label>
         <label>
-          Email
-          <input type="email" name="email" autoComplete="email" required />
-        </label>
-        <label>
           Password
           <input type="password" name="password" autoComplete="new-password" required />
-        </label>
-        <label>
-          Confirm password
-          <input type="password" name="confirmPassword" autoComplete="new-password" required />
         </label>
         <button type="submit" className="btn btn-primary">
           Create account
