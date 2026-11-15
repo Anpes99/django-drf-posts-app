@@ -1,24 +1,26 @@
-from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import generics, status, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models import Post
 from .serializers import CreatePostSerializer, ReadPostSerializer
 
 
-class PostView(APIView):
-    def get_permissions(self):
+class PostView(generics.ListCreateAPIView):
+    queryset = Post.objects.select_related('author').order_by('-created_at')
+    
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'text']
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_serializer_class(self):
         if self.request.method == 'POST':
-            return [IsAuthenticated()]
-        return [AllowAny()]
+            return CreatePostSerializer
+        return ReadPostSerializer
 
-    def get(self, request):
-        posts = Post.objects.select_related('author').order_by('-created_at')
-        return Response(ReadPostSerializer(posts, many=True).data)
-
-    def post(self, request):
-        serializer = CreatePostSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
