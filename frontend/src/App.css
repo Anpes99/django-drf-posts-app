@@ -247,3 +247,46 @@
   font: inherit;
   font-size: 0.95rem;
 }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 2rem 0;
+}
+
+.page-btn {
+  min-width: 2.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #e5e4e7;
+  border-radius: 8px;
+  background: #fff;
+  color: #3f3a47;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.page-btn:hover:not(:disabled):not(.active) {
+  border-color: #646cff;
+}
+
+.page-btn.active {
+  background: #646cff;
+  border-color: #646cff;
+  color: #fff;
+  cursor: default;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.page-gap {
+  padding: 0 0.25rem;
+  opacity: 0.6;
+}

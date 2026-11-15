@@ -1,9 +1,9 @@
 from rest_framework import generics, status, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-
 from .models import Post
 from .serializers import CreatePostSerializer, ReadPostSerializer
+from .pagination import PostPagination
 
 
 class PostView(generics.ListCreateAPIView):
@@ -11,6 +11,8 @@ class PostView(generics.ListCreateAPIView):
     
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'text']
+
+    pagination_class = PostPagination
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
