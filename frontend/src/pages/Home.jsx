@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import api from '../api.js'
 import Pagination from '../components/Pagination.jsx'
 import PostFeedItem from '../components/PostFeedItem.jsx'
@@ -12,6 +13,7 @@ export default function Home() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [reloadKey, setReloadKey] = useState(0) // add 1 to refetch the current page
+  const userId = useSelector((state) => state.app.user?.id) // refetch on login/logout: my_vote is per user
 
   useEffect(() => {
     api
@@ -22,7 +24,7 @@ export default function Home() {
         setPosts(res.data.results)
         setTotalPages(Math.ceil(res.data.count / PAGE_SIZE))
       })
-  }, [searchWord, page, reloadKey])
+  }, [searchWord, page, reloadKey, userId])
 
   const handleSearch = (word) => {
     setSearchWord(word)
