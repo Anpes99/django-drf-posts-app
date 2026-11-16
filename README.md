@@ -1,7 +1,5 @@
 # Django DRF Posts App
 
-[![CI](https://github.com/Anpes99/django-drf-posts-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Anpes99/django-drf-posts-app/actions/workflows/ci.yml)
-
 A posts app with a Django REST Framework API and a React frontend.
 
 ## Features
