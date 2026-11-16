@@ -22,3 +22,5 @@ A small posts app with a Django REST Framework API and a React frontend.
 | GET | `/api/auth/me/` | Current user |
 | GET, POST | `/api/posts/` | List (search, paginated) / create posts |
 | GET, PATCH, DELETE | `/api/posts/<id>/` | Retrieve / update / delete a post |
+
+All API errors return `{"error": {"message": "...", "fields": {...}}}`, where `fields` is only present for validation errors.
