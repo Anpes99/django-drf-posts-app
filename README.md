@@ -1,6 +1,6 @@
 # Django DRF Posts App
 
-A posts app with a Django REST Framework API and a React frontend.
+A small posts app with a Django REST Framework API and a React frontend.
 
 ## Features
 - Session authentication: sign up, log in, log out
