@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from .models import Post
+from .services import cast_vote
 
 pytestmark = pytest.mark.django_db
 
@@ -105,3 +106,18 @@ def test_author_cannot_delete_post_without_csrf_token(user, post):
 
     assert res.status_code == 403
     assert Post.objects.filter(pk=post.pk).exists()
+
+
+# --- performance ---
+
+
+def test_feed_query_count_does_not_grow_with_posts(other_auth_client, user, other_user, django_assert_num_queries):
+    for i in range(5):
+        p = Post.objects.create(author=user, title=f"t{i}", text="x")
+        cast_vote(other_user, p.pk, 1)
+
+    # one COUNT for pagination + one SELECT with author join and my_vote subquery
+    with django_assert_num_queries(2):
+        res = other_auth_client.get(reverse("posts"))
+
+    assert [p["my_vote"] for p in res.data["results"]] == [1] * 5

@@ -1,20 +1,24 @@
 from rest_framework import generics, status, filters
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Post
-from .serializers import CreatePostSerializer, UpdatePostSerializer, ReadPostSerializer
+from .serializers import CreatePostSerializer, UpdatePostSerializer, ReadPostSerializer, VoteSerializer
+from .services import cast_vote
 from .pagination import PostPagination
 from .permissions import IsAuthorOrReadOnly
 
 class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.select_related('author').order_by('-created_at')
-    
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'text']
 
     pagination_class = PostPagination
 
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return Post.objects.select_related('author').with_my_vote(self.request.user).order_by('-created_at')
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -29,9 +33,11 @@ class PostListCreateView(generics.ListCreateAPIView):
         return Response(ReadPostSerializer(post).data, status=status.HTTP_201_CREATED)
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.select_related('author')
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     http_method_names = ['get', 'patch', 'delete', 'head', 'options']
+
+    def get_queryset(self):
+        return Post.objects.select_related('author').with_my_vote(self.request.user)
 
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
@@ -44,4 +50,21 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
 
         post = serializer.save()
+        return Response(ReadPostSerializer(post).data)
+
+
+class PostVoteView(APIView):
+    """PUT {"value": 1 | -1 | 0} sets the current user's vote; 0 removes it. Idempotent."""
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        serializer = VoteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            cast_vote(request.user, pk, serializer.validated_data['value'])
+        except Post.DoesNotExist:
+            raise NotFound('Post not found.')
+
+        post = Post.objects.select_related('author').with_my_vote(request.user).get(pk=pk)
         return Response(ReadPostSerializer(post).data)

@@ -1,5 +1,16 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import OuterRef, Subquery, Value
+from django.db.models.functions import Coalesce
+
+
+class PostQuerySet(models.QuerySet):
+    def with_my_vote(self, user):
+        """Annotate `my_vote` (1, -1 or 0) for `user`, as one subquery in the same SQL query."""
+        if not user.is_authenticated:
+            return self.annotate(my_vote=Value(0))
+        vote = PostVote.objects.filter(post=OuterRef('pk'), user=user).values('value')[:1]
+        return self.annotate(my_vote=Coalesce(Subquery(vote), 0))
 
 
 class Post(models.Model):
@@ -9,6 +20,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
+
+    objects = PostQuerySet.as_manager()
 
 
 class PostVote(models.Model):

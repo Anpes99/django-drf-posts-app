@@ -8,8 +8,26 @@ export default function PostFeedItem({ post, onDelete, onUpdate }) {
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [voting, setVoting] = useState(false)
 
   const isOwner = user?.username === post.author
+  const myVote = post.my_vote ?? 0
+  const score = (post.upvotes ?? 0) - (post.downvotes ?? 0)
+
+  // Clicking the active arrow again removes the vote (value 0).
+  const handleVote = async (value) => {
+    setVoting(true)
+    try {
+      const res = await api.put(`/posts/${post.id}/vote/`, {
+        value: myVote === value ? 0 : value,
+      })
+      onUpdate?.(res.data) // the post with new counts
+    } catch (err) {
+      window.alert(getErrorMessage(err))
+    } finally {
+      setVoting(false)
+    }
+  }
 
   const date = new Date(post.created_at).toLocaleDateString(undefined, {
     year: 'numeric',
@@ -103,6 +121,33 @@ export default function PostFeedItem({ post, onDelete, onUpdate }) {
         {date}
       </p>
       <p className="post-text">{post.text}</p>
+      <div className="post-votes">
+        <button
+          type="button"
+          className={`vote-btn vote-up${myVote === 1 ? ' active' : ''}`}
+          aria-label="Upvote"
+          aria-pressed={myVote === 1}
+          title={user ? 'Upvote' : 'Log in to vote'}
+          onClick={() => handleVote(1)}
+          disabled={!user || voting}
+        >
+          ▲
+        </button>
+        <span className="vote-score" aria-label="Score">
+          {score}
+        </span>
+        <button
+          type="button"
+          className={`vote-btn vote-down${myVote === -1 ? ' active' : ''}`}
+          aria-label="Downvote"
+          aria-pressed={myVote === -1}
+          title={user ? 'Downvote' : 'Log in to vote'}
+          onClick={() => handleVote(-1)}
+          disabled={!user || voting}
+        >
+          ▼
+        </button>
+      </div>
     </article>
   )
 }
