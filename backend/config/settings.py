@@ -10,23 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load backend/.env if present. Real environment variables take precedence.
+load_dotenv(BASE_DIR / '.env')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^+cp%e@a=ml=w19i72t-rb3va+ey^=_z0qo)i)a3iu&4czk)1#'
+# Deployment checklist: https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Off unless explicitly enabled, so a missing .env never means debug in production.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is off.')
+    SECRET_KEY = 'django-insecure-dev-only-key'
+
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -130,7 +138,9 @@ STATIC_URL = 'static/'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': os.environ.get(
+            'DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
+        ),
     },
 }
 
@@ -147,19 +157,20 @@ REST_FRAMEWORK = {
     ]
 }
 
-# CORS (Vite dev server)
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',  # e2e tests
-    'http://127.0.0.1:5174',
-]
-
+# CORS / CSRF: the frontend origins allowed to call the API with cookies.
+# Defaults cover the Vite dev server (5173) and the e2e test server (5174).
+FRONTEND_ORIGINS = os.environ.get(
+    'DJANGO_FRONTEND_ORIGINS',
+    'http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174',
+).split(',')
+CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
 CORS_ALLOW_CREDENTIALS = True
-# Trust the Vite dev server for CSRF (its proxy rewrites the Host header)
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',  # e2e tests
-    'http://127.0.0.1:5174',
-]
+# The Vite proxy rewrites the Host header, so its origin must be trusted for CSRF.
+CSRF_TRUSTED_ORIGINS = FRONTEND_ORIGINS
+
+# Secure cookies and HTTPS redirect when running in production.
+if not DEBUG:
+    SECURE_COOKIES = os.environ.get('DJANGO_SECURE_COOKIES', 'True').lower() == 'true'
+    SESSION_COOKIE_SECURE = SECURE_COOKIES
+    CSRF_COOKIE_SECURE = SECURE_COOKIES
+    SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', 'False').lower() == 'true'
