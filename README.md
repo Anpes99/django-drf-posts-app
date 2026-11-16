@@ -5,8 +5,9 @@ A small posts app with a Django REST Framework API and a React frontend.
 ## Features
 - Session authentication: sign up, log in, log out
 - Create, read, update and delete posts (only the author can edit or delete their own posts)
+- Upvote and downvote posts, with counters kept consistent under concurrent votes
 - Post search and pagination
-- Backend tests with pytest and end-to-end tests with Playwright
+- 53 Backend tests with pytest and 6 end-to-end tests with Playwright
 
 ## Tech stack
 **Backend:** Python, Django, Django REST Framework, SQLite
