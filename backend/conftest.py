@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 
 
 @pytest.fixture
-def api_client():
+def anon_client():
     """Anonymous client."""
     return APIClient()
 

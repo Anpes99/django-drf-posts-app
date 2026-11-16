@@ -1,5 +1,6 @@
 import pytest
 from django.urls import reverse
+from rest_framework.test import APIClient
 
 from .models import Post
 
@@ -18,30 +19,30 @@ def detail_url(post):
 # --- anonymous users: read-only ---
 
 
-def test_anonymous_user_can_list_posts(api_client, post):
-    res = api_client.get(reverse("posts"))
+def test_anonymous_user_can_list_posts(anon_client, post):
+    res = anon_client.get(reverse("posts"))
 
     assert res.status_code == 200
     assert res.data["results"][0]["id"] == post.pk
 
 
-def test_anonymous_user_cannot_create_post(api_client):
-    res = api_client.post(reverse("posts"), {"title": "test title1", "text": "test text1"})
+def test_anonymous_user_cannot_create_post(anon_client):
+    res = anon_client.post(reverse("posts"), {"title": "test title1", "text": "test text1"})
 
     assert res.status_code == 403
     assert Post.objects.count() == 0
 
 
-def test_anonymous_user_cannot_update_post(api_client, post):
-    res = api_client.patch(detail_url(post), {"text": "test update text1"})
+def test_anonymous_user_cannot_update_post(anon_client, post):
+    res = anon_client.patch(detail_url(post), {"text": "test update text1"})
 
     assert res.status_code == 403
     post.refresh_from_db()
     assert post.text == "Original text"
 
 
-def test_anonymous_user_cannot_delete_post(api_client, post):
-    res = api_client.delete(detail_url(post))
+def test_anonymous_user_cannot_delete_post(anon_client, post):
+    res = anon_client.delete(detail_url(post))
 
     assert res.status_code == 403
     assert Post.objects.filter(pk=post.pk).exists()
@@ -94,3 +95,13 @@ def test_author_can_delete_own_post(auth_client, post):
     assert res.status_code == 204
     assert not Post.objects.filter(pk=post.pk).exists()
 
+
+def test_author_cannot_delete_post_without_csrf_token(user, post):
+    # Session cookie present, no X-CSRFToken header.
+    client = APIClient(enforce_csrf_checks=True)
+    client.force_login(user)
+
+    res = client.delete(detail_url(post))
+
+    assert res.status_code == 403
+    assert Post.objects.filter(pk=post.pk).exists()
