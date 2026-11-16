@@ -152,7 +152,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    # Every error response uses one shape: {"error": {"message", "fields"?}}
+    'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler',
 }
 
 # CORS / CSRF: the frontend origins allowed to call the API with cookies.

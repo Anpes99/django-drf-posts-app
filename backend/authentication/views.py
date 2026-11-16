@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from config.exceptions import InvalidCredentials
+
 from .serializers import LoginSerializer, SignupSerializer
 
 
@@ -11,8 +13,7 @@ from .serializers import LoginSerializer, SignupSerializer
 @permission_classes([AllowAny])
 def signup_view(request):
     serializer = SignupSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    serializer.is_valid(raise_exception=True)
 
     user = serializer.save()
     login(request, user)
@@ -23,12 +24,11 @@ def signup_view(request):
 @permission_classes([AllowAny])
 def login_view(request):
     serializer = LoginSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    serializer.is_valid(raise_exception=True)
 
     user = authenticate(request=request, **serializer.validated_data)
     if not user:
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        raise InvalidCredentials()
 
     login(request, user)
     return Response({'success': True})

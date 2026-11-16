@@ -39,7 +39,7 @@ def test_signup_requires_username_and_password(anon_client, payload):
     res = anon_client.post(reverse("signup"), payload)
 
     assert res.status_code == 400
-    assert "error" in res.data
+    assert "fields" in res.data["error"]
     assert User.objects.count() == 0
 
 
@@ -48,7 +48,7 @@ def test_signup_rejects_weak_password(anon_client, weak_password):
     res = anon_client.post(reverse("signup"), {"username": "newuser", "password": weak_password})
 
     assert res.status_code == 400
-    assert "error" in res.data
+    assert "password" in res.data["error"]["fields"]
     assert not User.objects.filter(username="newuser").exists()
 
 
@@ -85,7 +85,7 @@ def test_login_with_invalid_credentials_fails(anon_client, user, username, passw
 
     assert res.status_code == 401
     # the same message either way, so the API doesn't reveal which usernames exist
-    assert res.data == {"error": "Invalid credentials"}
+    assert res.data == {"error": {"message": "Invalid credentials"}}
     assert anon_client.get(reverse("me")).status_code == 403
 
 

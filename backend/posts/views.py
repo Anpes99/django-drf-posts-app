@@ -23,8 +23,7 @@ class PostListCreateView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         post = serializer.save(author=request.user)
         return Response(ReadPostSerializer(post).data, status=status.HTTP_201_CREATED)
@@ -42,8 +41,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         post = self.get_object()  # also runs the author permission check
         serializer = self.get_serializer(post, data=request.data, partial=True)
-        if not serializer.is_valid():
-            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         post = serializer.save()
         return Response(ReadPostSerializer(post).data)
