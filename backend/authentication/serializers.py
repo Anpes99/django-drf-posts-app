@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True, trim_whitespace=False, style={'input_type': 'password'})
 
     class Meta:
         model = User
@@ -26,3 +26,8 @@ class SignupSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # create_user() hashes the password; the default create() would store it in plain text.
         return User.objects.create_user(**validated_data)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True, trim_whitespace=False, style={'input_type': 'password'})
