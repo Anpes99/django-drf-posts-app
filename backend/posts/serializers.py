@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Post
+from .models import Comment, Post
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -28,3 +28,17 @@ class ReadPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'author', 'title', 'text', 'created_at', 'upvotes', 'downvotes', 'my_vote']
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+
+class ReadCommentSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'text', 'created_at']

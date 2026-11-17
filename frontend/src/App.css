@@ -442,3 +442,79 @@
 .page-status {
   text-align: left;
 }
+
+/* Comments */
+.comments {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.comments-heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.comment-form .form-error {
+  align-self: stretch;
+}
+
+.comment-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e5e4e7;
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+  color: #3f3a47;
+  resize: vertical;
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.comment {
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1px solid #e5e4e7;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.comment-meta {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  color: #6b6375;
+}
+
+.comment-text {
+  margin: 0;
+  line-height: 1.5;
+  color: #3f3a47;
+  white-space: pre-line;
+}
+
+.comments-note {
+  font-size: 0.9rem;
+  color: #6b6375;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -6,4 +6,5 @@ urlpatterns = [
      path('', views.PostListCreateView.as_view(), name='posts'),
      path('<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
      path('<int:pk>/vote/', views.PostVoteView.as_view(), name='post-vote'),
+     path('<int:pk>/comments/', views.PostCommentListCreateView.as_view(), name='post-comments'),
 ]

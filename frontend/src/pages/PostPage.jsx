@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router'
 import api, { getErrorMessage } from '../api.js'
+import Comments from '../components/Comments.jsx'
 import PostFeedItem from '../components/PostFeedItem.jsx'
 
 export default function PostPage() {
@@ -60,12 +61,16 @@ export default function PostPage() {
       )}
 
       {status === 'ready' && (
-        <PostFeedItem
-          post={result.post}
-          linkTitle={false}
-          onUpdate={handleUpdate}
-          onDelete={() => navigate('/')}
-        />
+        <>
+          <PostFeedItem
+            post={result.post}
+            linkTitle={false}
+            onUpdate={handleUpdate}
+            onDelete={() => navigate('/')}
+          />
+          {/* key={id}: a new post id remounts Comments, so its state (comments, cursor) resets */}
+          <Comments key={id} postId={id} />
+        </>
       )}
     </section>
   )
