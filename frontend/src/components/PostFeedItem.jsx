@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router'
 import api, { getErrorMessage } from '../api.js'
 
-export default function PostFeedItem({ post, onDelete, onUpdate }) {
+export default function PostFeedItem({ post, onDelete, onUpdate, linkTitle = true }) {
   const user = useSelector((state) => state.app.user)
   const [deleting, setDeleting] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -99,7 +100,9 @@ export default function PostFeedItem({ post, onDelete, onUpdate }) {
   return (
     <article className="post-item">
       <div className="post-header">
-        <h2 className="post-title">{post.title}</h2>
+        <h2 className="post-title">
+          {linkTitle ? <Link to={`/posts/${post.id}`}>{post.title}</Link> : post.title}
+        </h2>
         {isOwner && (
           <div className="post-actions">
             <button type="button" className="post-edit" onClick={() => setEditing(true)}>
