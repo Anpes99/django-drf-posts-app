@@ -9,7 +9,7 @@ A small posts app with a Django REST Framework API and a React frontend.
 - Upvote and downvote posts, with counters kept consistent under concurrent votes
 - Post pages with comments (newest first, cursor pagination with "load more")
 - Post search and pagination
-- 64 backend tests with pytest and 6 end-to-end tests with Playwright
+- 64 backend tests with pytest and 10 end-to-end tests with Playwright
 
 ## Tech stack
 
