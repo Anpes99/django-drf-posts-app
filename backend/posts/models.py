@@ -39,3 +39,15 @@ class PostVote(models.Model):
             models.UniqueConstraint(fields=['user', 'post'], name='one_vote_per_user_per_post'),
             models.CheckConstraint(condition=models.Q(value__in=[1, -1]), name='vote_value_valid'),
         ]
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_at']
+        indexes = [models.Index(fields=['post', 'created_at'], name='comment_post_created_idx')]
