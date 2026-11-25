@@ -17,6 +17,20 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: posts_app
+          POSTGRES_USER: posts
+          POSTGRES_PASSWORD: posts
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U posts"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 15
     env:
       # Throwaway key so Django can start; manage.py checks need it (pytest sets its own).
       DJANGO_SECRET_KEY: ci-only-not-secret
@@ -64,6 +78,20 @@ jobs:
     name: End-to-end tests
     runs-on: ubuntu-latest
     needs: [backend, frontend]
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: posts_app_e2e
+          POSTGRES_USER: posts
+          POSTGRES_PASSWORD: posts
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U posts"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 15
     env:
       DJANGO_SECRET_KEY: ci-only-not-secret
       # The e2e servers run over plain http, so secure-only cookies must stay off.

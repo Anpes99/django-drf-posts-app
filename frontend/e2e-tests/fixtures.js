@@ -8,7 +8,7 @@ export const test = base.extend({
     async ({}, use) => {
       execSync("./venv/bin/python manage.py flush --noinput", {
         cwd: "../backend",
-        env: { ...process.env, DJANGO_DB_NAME: "e2e.sqlite3" },
+        env: { ...process.env, DJANGO_DB_NAME: "posts_app_e2e" },
         stdio: "inherit",
       });
       await use();

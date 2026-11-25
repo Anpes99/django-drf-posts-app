@@ -1,0 +1,23 @@
+# Local PostgreSQL for development and tests: docker compose up -d
+# Reads DJANGO_DB_* from backend/.env, the same values Django uses.
+name: django-drf-posts
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: ${DJANGO_DB_NAME:-posts_app}
+      POSTGRES_USER: ${DJANGO_DB_USER:-posts}
+      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD:-posts}
+    ports:
+      - "${DJANGO_DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./docker/init-e2e-db.sql:/docker-entrypoint-initdb.d/init-e2e-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DJANGO_DB_USER:-posts} -d ${DJANGO_DB_NAME:-posts_app}"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+volumes:
+  pgdata:

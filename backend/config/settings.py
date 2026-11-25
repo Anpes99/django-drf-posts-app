@@ -88,8 +88,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('DJANGO_DB_NAME', BASE_DIR / 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DJANGO_DB_NAME', 'posts_app'),
+        'USER': os.environ.get('DJANGO_DB_USER', 'posts'),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', 'posts'),
+        'HOST': os.environ.get('DJANGO_DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DJANGO_DB_PORT', '5432'),
+        # Seconds to keep a connection open for reuse. Off by default: runserver uses a new
+        # thread per request, so persistent connections pile up until Postgres refuses more.
+        # Set to e.g. 60 in production (gunicorn workers reuse their connections).
+        'CONN_MAX_AGE': int(os.environ.get('DJANGO_DB_CONN_MAX_AGE', '0')),
+        'CONN_HEALTH_CHECKS': True,
     }
 }
 

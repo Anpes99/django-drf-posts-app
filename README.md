@@ -13,7 +13,7 @@ A small posts app with a Django REST Framework API and a React frontend.
 
 ## Tech stack
 
-**Backend:** Python, Django, Django REST Framework, SQLite
+**Backend:** Python, Django, Django REST Framework, PostgreSQL (Docker Compose)
 **Frontend:** React, Redux Toolkit, React Router, Axios, Vite
 **Testing:** pytest, pytest-django, Playwright
 
