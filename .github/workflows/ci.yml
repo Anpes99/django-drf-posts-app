@@ -106,18 +106,18 @@ jobs:
           cache: pip
           cache-dependency-path: backend/requirements*.txt
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
       # playwright.config.js starts Django with ./venv/bin/python, so build that venv.
       - name: Create backend venv
         working-directory: backend
         run: |
           python -m venv venv
           ./venv/bin/pip install -r requirements.txt
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
         working-directory: frontend
